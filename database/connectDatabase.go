@@ -12,6 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var (
+	DB_NAME = "goax"
+)
+
 func DBInstance() *mongo.Client {
 	// load environmental variables
 	err := godotenv.Load(".env")
@@ -50,5 +54,10 @@ var Client = DBInstance()
 
 // OpenCollection open a MongoDB collection
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	return client.Database("cluster0").Collection(collectionName)
+	return client.Database(DB_NAME).Collection(collectionName)
+}
+
+// CloseClient close a MongoDB client
+func CloseClient(client *mongo.Client) {
+	client.Disconnect(context.TODO())
 }
