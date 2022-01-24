@@ -3,3 +3,6 @@ serve: main.go
 
 clean:
 	rm -rf ./**/*.{o,exe}
+
+install:
+	go install
