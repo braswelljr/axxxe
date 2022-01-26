@@ -2,13 +2,13 @@ package controller
 
 import (
 	"context"
-	"github.com/braswelljr/goax/helper"
-	"go.mongodb.org/mongo-driver/bson"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
+	"github.com/braswelljr/goax/helper"
 	"github.com/braswelljr/goax/model"
 )
 
@@ -54,14 +54,48 @@ func GetUserById(id string) (*model.User, error) {
 
 	// context
 	contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 
 	// get the user from the database
 	user := &model.User{}
-	defer cancel()
 	if err := collection.FindOne(contxt, bson.M{"user_id": oid}).Decode(user); err != nil {
 		return nil, err
 	}
 
 	// return the user
 	return user, nil
+}
+
+// GetAllUsers fetches all the users from the database - admin only
+func GetAllUsers() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		// Check user with admin role
+		if err := helper.CheckUserType(ctx, "ADMIN"); err != nil {
+			return ctx.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusForbidden,
+			})
+		}
+
+		// context
+		contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		// get all the users from the database
+		var users []*model.User
+		cursor, _ := collection.Find(contxt, bson.M{})
+		if err := cursor.All(contxt, &users); err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error":  err,
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		// return the users
+		return ctx.Status(200).JSON(map[string]interface{}{
+			"message":    "Users found",
+			"payload":    users,
+			"statusCode": fiber.StatusOK,
+		})
+	}
 }

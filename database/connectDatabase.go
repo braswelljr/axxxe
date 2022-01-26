@@ -56,8 +56,3 @@ var Client = DBInstance()
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	return client.Database(DB_NAME).Collection(collectionName)
 }
-
-// CloseClient close a MongoDB client
-func CloseClient(client *mongo.Client) {
-	client.Disconnect(context.TODO())
-}

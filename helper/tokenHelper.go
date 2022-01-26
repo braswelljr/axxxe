@@ -1,29 +1,31 @@
 package helper
 
 import (
-	"github.com/braswelljr/goax/model"
-	"github.com/golang-jwt/jwt/v4"
-	"os"
-	"time"
+  "os"
+  "time"
+
+  "github.com/braswelljr/goax/model"
+  "github.com/golang-jwt/jwt/v4"
 )
 
 var (
-	SECRET_KEY = os.Getenv("SECRET_KEY")
+	SecretKey = os.Getenv("SECRET_KEY")
 )
 
 type SignedParams struct {
-	user model.TokenizedUserParams
+	User model.TokenizedUserParams
 	jwt.RegisteredClaims
 }
 
 func GetAllTokens(user model.TokenizedUserParams) (string, string, error) {
-	if SECRET_KEY != "" {
-		SECRET_KEY = "xxyyzzaa"
+  //
+	if SecretKey != "" {
+		SecretKey = "xxyyzzaa"
 	}
 
 	// params
 	signedParams := &SignedParams{
-		user: user,
+		User: user,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{
 				Time: time.Now().Local().Add(time.Hour * time.Duration(168)),
@@ -41,14 +43,46 @@ func GetAllTokens(user model.TokenizedUserParams) (string, string, error) {
 	}
 
 	// create token
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, signedParams).SignedString([]byte(SECRET_KEY))
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, signedParams).SignedString([]byte(SecretKey))
 
 	// create refresh token
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SecretKey))
 
 	if err != nil {
 		return "", "", err
 	}
 
 	return token, refreshToken, err
+}
+
+// ValidateToken validates a token
+func ValidateToken(token string) (*SignedParams, error) {
+	if SecretKey != "" {
+		SecretKey = "xxyyzzaa"
+	}
+
+	// parse token
+	tokenClaims, err := jwt.ParseWithClaims(
+		token,
+		&SignedParams{},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(SecretKey), nil
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims, ok := tokenClaims.Claims.(*SignedParams)
+	if !ok {
+		return nil, err
+	}
+
+	// Ensure token is valid not expired
+	if claims.VerifyExpiresAt(time.Now().Local(), true) == false {
+		return nil, err
+	}
+
+	return claims, nil
 }
