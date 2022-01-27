@@ -18,7 +18,7 @@ type SignedParams struct {
 }
 
 func GetAllTokens(user model.TokenizedUserParams) (string, string, error) {
-  //
+  // set secret key
 	if SecretKey != "" {
 		SecretKey = "xxyyzzaa"
 	}

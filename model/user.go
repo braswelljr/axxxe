@@ -11,7 +11,7 @@ type User struct {
 	Lastname     string             `json:"lastname" bson:"lastname"`
 	Email        string             `json:"email" bson:"email" validate:"required,email"`
 	Password     string             `json:"password" bson:"password" validate:"required" min:"8"`
-	Phone        string             `json:"phone" bson:"phone" validate:"required" min:"8"`
+	Phone        string             `json:"phone" bson:"phone" validate:"required"`
 	Gender       string             `json:"gender,omitempty" bson:"gender" validate:"required,eq=FEMALE|eq=MALE"`
 	LastLogin    primitive.DateTime `json:"last_login" bson:"last_login"`
 	CreatedAt    primitive.DateTime `json:"created_at" bson:"created_at"`
