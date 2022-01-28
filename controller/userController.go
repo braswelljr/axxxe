@@ -2,7 +2,7 @@ package controller
 
 import (
   "context"
-  "log"
+  "errors"
   "strconv"
   "time"
 
@@ -31,7 +31,6 @@ func GetUser() fiber.Handler {
 
     // get the user from the database
     user, err := GetUserById(id)
-    log.Println(user)
     if err != nil {
       return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
         "error":  err.Error(),
@@ -65,7 +64,6 @@ func GetUserById(id string) (*model.User, error) {
   if err := collection.FindOne(contxt, bson.M{"id": oid}).Decode(user); err != nil {
     return nil, err
   }
-  log.Println(user)
 
   // return the user
   return user, nil
@@ -139,8 +137,132 @@ func GetAllUsers() fiber.Handler {
     // return the users
     return ctx.Status(200).JSON(map[string]interface{}{
       "message":    "Users found",
-      "payload":    users[0],
+      "payload":    users,
       "statusCode": fiber.StatusOK,
     })
   }
+}
+
+// UpdateUser - updates a user
+// Fields that can be updated:
+//  - firstname
+//  - lastname
+//  - username
+//  - phone
+//  - gender
+func UpdateUser() fiber.Handler {
+  // get the user id from the request params
+  return func(ctx *fiber.Ctx) error {
+    // get the user id from the request params
+    id := ctx.Params("user_id")
+
+    // get the user from the database
+    user, err := GetUserById(id)
+    if err != nil {
+      return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+        "error":  err.Error(),
+        "status": fiber.StatusInternalServerError,
+      })
+    }
+
+    // set old email
+    oldEmail := user.Email
+
+    // decode the request body into the user struct
+    if err := ctx.BodyParser(&user); err != nil {
+      return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+        "error": err.Error(),
+      })
+    }
+
+    // validate the user
+    if err := validate.Struct(user); err != nil {
+      return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+        "error":  err.Error(),
+        "status": fiber.StatusBadRequest,
+      })
+    }
+
+    // check for more than one user with the same email
+    if user.Email != "" {
+      if err := checkEmail(user.Email, id); err != nil {
+        return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
+          "error":  err.Error(),
+          "status": fiber.StatusConflict,
+        })
+      }
+    }
+
+    // check for more than one user with the same email again
+    if err := checkEmail(user.Email, id); err != nil {
+        user.Email = oldEmail
+      return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+        "error":  err.Error(),
+        "status": fiber.StatusBadRequest,
+      })
+    }
+
+    // context
+    contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+    defer cancel()
+
+    // update the user
+    user.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+
+    // update the user in the database
+    if _, err := collection.UpdateOne(contxt, bson.M{"user_id": user.UserId}, bson.M{"$set": user}); err != nil {
+      return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+        "error":  err.Error(),
+        "status": fiber.StatusInternalServerError,
+      })
+    }
+
+    // return the user
+    return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+      "message":    "User updated",
+      "statusCode": fiber.StatusNoContent,
+    })
+  }
+}
+
+// check email
+func checkEmail(email string, id string) error {
+  // context
+  contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+  defer cancel()
+
+  // make a match query to get all the users
+  match := bson.D{{"$match", bson.D{{"email", email}}}}
+
+  // make a group query to get the total number of users
+  group := bson.D{{"$group", bson.D{
+    {"_id", nil},
+    {"total_count", bson.D{{"$sum", 1}}},
+  }}}
+
+  // make a project query to get the users
+  project := bson.D{{"$project", bson.D{
+    {"_id", 0},
+    {"total_count", "$total_count"},
+  }}}
+
+  result, err := collection.Aggregate(contxt, mongo.Pipeline{
+    match, group, project,
+  })
+  if err != nil {
+    return err
+  }
+
+  // get all the users from the database
+  var users []bson.M
+  if err := result.All(contxt, &users); err != nil {
+    return err
+  }
+
+  // check if there is more than one user with the same email
+  if len(users) > 1 {
+    return errors.New("email already exists")
+  }
+
+  return nil
 }

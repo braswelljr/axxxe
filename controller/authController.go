@@ -32,14 +32,16 @@ func Signup() fiber.Handler {
     // decode the request body into the user struct
     if err := ctx.BodyParser(&user); err != nil {
       return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-        "error": err.Error(),
+        "error":  err.Error(),
+        "status": fiber.StatusBadRequest,
       })
     }
 
     // validate the user
     if err := validate.Struct(user); err != nil {
       return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-        "error": err.Error(),
+        "error":  err.Error(),
+        "status": fiber.StatusBadRequest,
       })
     }
 
@@ -117,6 +119,7 @@ func Signup() fiber.Handler {
 }
 
 // Login to add user session
+// Uses email and password to login
 func Login() fiber.Handler {
   return func(ctx *fiber.Ctx) error {
     // context
