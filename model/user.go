@@ -7,11 +7,11 @@ import (
 type User struct {
 	Id           primitive.ObjectID `json:"id" bson:"id"`
 	Username     string             `json:"username" bson:"username" validate:"required" minlength:"3"`
-	Firstname    string             `json:"firstname" bson:"firstname"`
-	Lastname     string             `json:"lastname" bson:"lastname"`
+	Firstname    string             `json:"firstname,omitempty" bson:"firstname,omitempty"`
+	Lastname     string             `json:"lastname,omitempty" bson:"lastname,omitempty"`
 	Email        string             `json:"email" bson:"email" validate:"required,email"`
 	Password     string             `json:"password" bson:"password" validate:"required" min:"8"`
-	Phone        string             `json:"phone" bson:"phone" validate:"required"`
+	Phone        string             `json:"phone,omitempty" bson:"phone,omitempty" validate:"required"`
 	Gender       string             `json:"gender,omitempty" bson:"gender" validate:"required,eq=FEMALE|eq=MALE"`
 	LastLogin    primitive.DateTime `json:"last_login" bson:"last_login"`
 	CreatedAt    primitive.DateTime `json:"created_at" bson:"created_at"`
