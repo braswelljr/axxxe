@@ -1,4 +1,4 @@
-name: Go
+name: Lint
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
           # version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
           version: latest
           # golangci-lint command line arguments
-          # args: 
+          args: golangci run
           # golangci-lint working directory, default is project root
           working-directory: ./..
           # the token is used for fetching patch of a pull request to show only new issues
