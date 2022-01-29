@@ -11,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
 
       - name: Run golangci-lint
         # You may pin to the exact commit or the version.
@@ -21,6 +22,8 @@ jobs:
           version: latest
           # golangci-lint command line arguments
           args:
+            - run
+            - --disable-all
           # golangci-lint working directory, default is project root
           working-directory: ./..
           # the token is used for fetching patch of a pull request to show only new issues
@@ -30,6 +33,6 @@ jobs:
           # if set to true then action uses pre-installed Go
           skip-go-installation: false
           # if set to true then the action don't cache or restore ~/go/pkg.
-          skip-pkg-cache: true
+          skip-pkg-cache: false
           # if set to true then the action don't cache or restore ~/.cache/go-build.
           skip-build-cache: false
