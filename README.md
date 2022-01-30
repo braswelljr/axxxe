@@ -23,5 +23,7 @@ go install
 make serve # with make
 # or
 go run main.go
+# or
+air # with air for hot reload in development
 ```
 

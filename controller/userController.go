@@ -39,7 +39,7 @@ func GetUser() fiber.Handler {
     }
 
     // return the user
-    return ctx.Status(200).JSON(map[string]interface{}{
+    return ctx.Status(200).JSON(fiber.Map{
       "message":    "User found",
       "payload":    user,
       "statusCode": fiber.StatusOK,
@@ -135,7 +135,7 @@ func GetAllUsers() fiber.Handler {
     }
 
     // return the users
-    return ctx.Status(200).JSON(map[string]interface{}{
+    return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
       "message":    "Users found",
       "payload":    users,
       "statusCode": fiber.StatusOK,
@@ -171,7 +171,8 @@ func UpdateUser() fiber.Handler {
     // decode the request body into the user struct
     if err := ctx.BodyParser(&user); err != nil {
       return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-        "error": err.Error(),
+        "error":  err.Error(),
+        "status": fiber.StatusBadRequest,
       })
     }
 
@@ -185,7 +186,7 @@ func UpdateUser() fiber.Handler {
 
     // check for more than one user with the same email
     if user.Email != "" {
-      if err := checkEmail(user.Email, id); err != nil {
+      if err := checkEmail(user.Email); err != nil {
         return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
           "error":  err.Error(),
           "status": fiber.StatusConflict,
@@ -194,8 +195,8 @@ func UpdateUser() fiber.Handler {
     }
 
     // check for more than one user with the same email again
-    if err := checkEmail(user.Email, id); err != nil {
-        user.Email = oldEmail
+    if err := checkEmail(user.Email); err != nil {
+      user.Email = oldEmail
       return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
         "error":  err.Error(),
         "status": fiber.StatusBadRequest,
@@ -226,7 +227,7 @@ func UpdateUser() fiber.Handler {
 }
 
 // check email
-func checkEmail(email string, id string) error {
+func checkEmail(email string) error {
   // context
   contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
   defer cancel()

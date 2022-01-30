@@ -2,16 +2,15 @@ package controller
 
 import (
   "context"
-  "github.com/braswelljr/goax/helper"
   "time"
 
   "github.com/go-playground/validator/v10"
   "github.com/gofiber/fiber/v2"
   "go.mongodb.org/mongo-driver/bson"
   "go.mongodb.org/mongo-driver/bson/primitive"
-  "golang.org/x/crypto/bcrypt"
 
   "github.com/braswelljr/goax/database"
+  "github.com/braswelljr/goax/helper"
   "github.com/braswelljr/goax/model"
 )
 
@@ -126,10 +125,7 @@ func Login() fiber.Handler {
     contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
     defer cancel()
     // get user params for login
-    user := struct {
-      Email    string `json:"email" bson:"email" validate:"required,email"`
-      Password string `json:"password" bson:"password" validate:"required"`
-    }{}
+    var user *model.LoginDetails
     foundUser := &model.User{}
 
     // decode the request body into the user struct
@@ -142,9 +138,9 @@ func Login() fiber.Handler {
 
     // validate the user
     if err := validate.Struct(user); err != nil {
-      return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+      return ctx.Status(fiber.StatusExpectationFailed).JSON(fiber.Map{
         "error":  err.Error(),
-        "status": fiber.StatusBadRequest,
+        "status": fiber.StatusExpectationFailed,
       })
     }
 
@@ -158,8 +154,8 @@ func Login() fiber.Handler {
     }
 
     // check if the password is correct
-    isValidPassword, err := ComparePasswords(user.Password, foundUser.Password)
-    if err != nil || !isValidPassword {
+    err = ComparePasswords(user.Password, foundUser.Password)
+    if err != nil {
       return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
         "error":  "Invalid Credentials",
         "status": fiber.StatusUnauthorized,
@@ -235,9 +231,9 @@ func Logout() fiber.Handler {
 
     // validate the user
     if err := validate.Struct(user); err != nil {
-      return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+      return ctx.Status(fiber.StatusExpectationFailed).JSON(fiber.Map{
         "error":  err.Error(),
-        "status": fiber.StatusBadRequest,
+        "status": fiber.StatusExpectationFailed,
       })
     }
 
@@ -270,19 +266,4 @@ func Logout() fiber.Handler {
       "status": fiber.StatusOK,
     })
   }
-}
-
-// HashPassword to hash the user's password
-func HashPassword(password string) (string, error) {
-  hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-  return string(hash), err
-}
-
-// ComparePasswords to check the user's password
-func ComparePasswords(password, hash string) (bool, error) {
-  err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-  if err != nil {
-    return false, err
-  }
-  return true, err
 }
