@@ -22,3 +22,9 @@
 # air tmp directory
 /tmp
 
+# enviroment variables
+*.env
+.env.local
+.env.development
+.env.test
+
