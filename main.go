@@ -29,6 +29,14 @@ func main() {
 	// add static files
 	app.Static("/", "./static")
 
+  // index route
+  app.All("/", func(ctx *fiber.Ctx) error {
+    return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+      "status": fiber.StatusOK,
+      "message": "Welcome to the GOAX api",
+    })
+  })
+
 	// handle routes
 	routes.Routes(app)
 

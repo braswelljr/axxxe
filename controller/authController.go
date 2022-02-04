@@ -216,7 +216,7 @@ func Logout() fiber.Handler {
     // context
     contxt, cancel := context.WithTimeout(context.Background(), 100*time.Second)
     defer cancel()
-    // get user params for login
+    // get user params for logout
     user := struct {
       UserId string `json:"user_id" bson:"user_id" validate:"required"`
     }{}

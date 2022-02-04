@@ -91,7 +91,7 @@ func UpdatePassword() fiber.Handler {
 
     return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
       "message": "Password Updated Successfully",
-      "status":    fiber.StatusNoContent,
+      "status":  fiber.StatusNoContent,
     })
   }
 }
@@ -99,9 +99,21 @@ func UpdatePassword() fiber.Handler {
 // ForgotPassword - reset forgotten password
 func ForgotPassword() fiber.Handler {
   return func(ctx *fiber.Ctx) error {
+    // get user id
+    id := ctx.Params("user_id")
+
+    // get user by id
+    _, err := GetUserById(id)
+    if err != nil {
+      return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+        "error":  err.Error(),
+        "status": fiber.StatusInternalServerError,
+      })
+    }
+
     return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
       "message": "Password Updated Successfully",
-      "status":    fiber.StatusNoContent,
+      "status":  fiber.StatusNoContent,
     })
   }
 }
