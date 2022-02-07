@@ -4,6 +4,8 @@ import (
   "github.com/gofiber/fiber/v2"
 
   "github.com/braswelljr/goax/controller"
+  "github.com/braswelljr/goax/controller/authenticationController"
+  "github.com/braswelljr/goax/controller/userController"
   "github.com/braswelljr/goax/middleware"
 )
 
@@ -21,18 +23,26 @@ func Routes(app *fiber.App) {
   {
     auth := v1.Group("/users")
     {
-      auth.Post("/signup", controller.Signup()) // Signup new users
-      auth.Post("/login", controller.Login())   // Login users
-      auth.Post("/logout", controller.Logout()) // Logout users
+      auth.Post("/signup", authenticationController.Signup()) // Signup new users
+      auth.Post("/login", authenticationController.Login())   // Login users
+      auth.Post("/logout", authenticationController.Logout()) // Logout users
     }
     // Protected routes
     user := v1.Use(middleware.Authenticate()).Group("/users")
     {
-      user.Get("/", controller.GetAllUsers())                              // Get all users
-      user.Get("/:user_id", controller.GetUser())                          // Get user by id
-      user.Patch("/:user_id", controller.UpdateUser())                     // Update user by id
-      user.Patch("/:user_id/update-password", controller.UpdatePassword()) // Update password
-      user.Patch("/:user_id/forgot-password", controller.ForgotPassword()) // Update password
+      user.Get("/", userController.GetAllUsers())                                        // Get all users
+      user.Get("/:user_id", userController.GetUser())                                    // Get user by id
+      user.Patch("/:user_id", userController.UpdateUser())                               // Update user by id
+      user.Patch("/:user_id/update-password", authenticationController.UpdatePassword()) // Update password
+      user.Patch("/:user_id/forgot-password", authenticationController.ForgotPassword()) // Update password
+    }
+  }
+  // Product routes
+  {
+    product := v1.Group("/products")
+    {
+      product.Get("/", controller.GetAllProducts())        // Get all products
+      product.Get("/:product_id", controller.GetProduct()) // Get product by id
     }
   }
 }

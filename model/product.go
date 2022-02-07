@@ -12,4 +12,5 @@ type Product struct {
 	Price        float64            `json:"price" bson:"price"`
 	Quantity     int                `json:"quantity" bson:"quantity"`
 	Availability bool               `json:"availability" bson:"availability" validate:"required"`
+  ProductId    string             `json:"product_id" bson:"product_id"`
 }

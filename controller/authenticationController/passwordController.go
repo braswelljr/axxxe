@@ -1,4 +1,4 @@
-package controller
+package authenticationController
 
 import (
   "context"
@@ -9,6 +9,7 @@ import (
   "go.mongodb.org/mongo-driver/bson/primitive"
   "golang.org/x/crypto/bcrypt"
 
+  "github.com/braswelljr/goax/controller/userController"
   "github.com/braswelljr/goax/model"
 )
 
@@ -37,7 +38,7 @@ func UpdatePassword() fiber.Handler {
     id := ctx.Params("user_id")
 
     // get user by id
-    user, err := GetUserById(id)
+    user, err := userController.GetUserById(id)
     if err != nil {
       return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
         "error":  err.Error(),
@@ -103,7 +104,7 @@ func ForgotPassword() fiber.Handler {
     id := ctx.Params("user_id")
 
     // get user by id
-    _, err := GetUserById(id)
+    _, err := userController.GetUserById(id)
     if err != nil {
       return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
         "error":  err.Error(),

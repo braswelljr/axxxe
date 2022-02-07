@@ -9,4 +9,5 @@ type Cart struct {
 	Products []Product          `json:"product" bson:"products"`
 	Price    float32            `json:"product_price" bson:"product_price"`
 	Quantity int64              `json:"quantity" bson:"quantity"`
+  CartId   string             `json:"cart_id" bson:"cart_id"`
 }

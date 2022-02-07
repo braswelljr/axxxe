@@ -1,4 +1,4 @@
-package controller
+package userController
 
 import (
   "context"
@@ -6,13 +6,20 @@ import (
   "strconv"
   "time"
 
+  "github.com/go-playground/validator/v10"
   "github.com/gofiber/fiber/v2"
   "go.mongodb.org/mongo-driver/bson"
   "go.mongodb.org/mongo-driver/bson/primitive"
   "go.mongodb.org/mongo-driver/mongo"
 
+  "github.com/braswelljr/goax/database"
   "github.com/braswelljr/goax/helper"
   "github.com/braswelljr/goax/model"
+)
+
+var (
+  collection = database.OpenCollection(database.Client, "users")
+  validate   = validator.New()
 )
 
 // GetUser - gets a user by id
