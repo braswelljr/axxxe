@@ -27,7 +27,7 @@ func DBInstance() *mongo.Client {
 	DB_URL := os.Getenv("DB_URL")
 	
 	if DB_URL == "" {
-		DB_URL = "mongodb://localhost:27017/goax"
+		DB_URL = "mongodb+srv://braswelljr:braswellazu@cluster0.1uecn.mongodb.net/test?retryWrites=true&w=majority"
 	}
 	
 	// Set client options
