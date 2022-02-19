@@ -1,1 +1,1 @@
-web: goax
+web: bin/goax
