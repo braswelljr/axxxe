@@ -6,7 +6,7 @@ tmp_dir = "tmp"
 [build]
   bin = "./tmp/main"
   # build command
-  cmd = "go build -o ./tmp/main ."
+  cmd = "go build -o ./tmp/main.exe ./main.go"
   # time delays between execution
   delay = 1000
   # excluded directories
