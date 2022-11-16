@@ -1,9 +1,12 @@
+.PHONY: start
 start: main.go
 	go run main.go
 
+.PHONY: serve
 serve: main.go
 	air
 
+.PHONY: nodemon
 nodemon: main.go
 	nodemon --exec go run main.go --signal SIGTERM
 
