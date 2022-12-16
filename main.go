@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
-	"github.com/braswelljr/goax/routes"
+	"github.com/braswelljr/axxxe/routes"
 )
 
 func main() {
@@ -29,13 +29,13 @@ func main() {
 	// add static files
 	app.Static("/", "./static")
 
-  // index route
-  app.All("/", func(ctx *fiber.Ctx) error {
-    return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-      "status": fiber.StatusOK,
-      "message": "Welcome to the GOAX api",
-    })
-  })
+	// index route
+	app.All("/", func(ctx *fiber.Ctx) error {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status":  fiber.StatusOK,
+			"message": "Welcome to the axxxe api",
+		})
+	})
 
 	// handle routes
 	routes.Routes(app)

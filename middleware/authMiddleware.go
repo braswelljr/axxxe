@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/braswelljr/goax/helper"
+	"github.com/braswelljr/axxxe/helper"
 )
 
 // Authenticate is a middleware that checks if the user is authenticated
@@ -30,7 +30,7 @@ func Authenticate() fiber.Handler {
 		ctx.Locals("username", claims.User.Username)
 		ctx.Locals("firstname", claims.User.Firstname)
 		ctx.Locals("lastname", claims.User.Lastname)
-		ctx.Locals("phone", claims.User.Phone )
+		ctx.Locals("phone", claims.User.Phone)
 		ctx.Locals("gender", claims.User.Gender)
 		ctx.Locals("role", claims.User.Role)
 		ctx.Locals("user_id", claims.User.UserId)

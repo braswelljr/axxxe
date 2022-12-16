@@ -1,1 +1,1 @@
-web: bin/goax
+web: bin/axxxe

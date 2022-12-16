@@ -12,9 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/braswelljr/goax/database"
-	"github.com/braswelljr/goax/helper"
-	"github.com/braswelljr/goax/model"
+	"github.com/braswelljr/axxxe/database"
+	"github.com/braswelljr/axxxe/helper"
+	"github.com/braswelljr/axxxe/model"
 )
 
 var (

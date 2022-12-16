@@ -3,10 +3,10 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/braswelljr/goax/controllers/v1/authentication"
-	"github.com/braswelljr/goax/controllers/v1/product"
-	"github.com/braswelljr/goax/controllers/v1/user"
-	"github.com/braswelljr/goax/middleware"
+	"github.com/braswelljr/axxxe/controllers/v1/authentication"
+	"github.com/braswelljr/axxxe/controllers/v1/product"
+	"github.com/braswelljr/axxxe/controllers/v1/user"
+	"github.com/braswelljr/axxxe/middleware"
 )
 
 // Routes handles application routes.

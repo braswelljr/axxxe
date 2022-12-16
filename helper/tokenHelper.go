@@ -1,11 +1,11 @@
 package helper
 
 import (
-  "os"
-  "time"
+	"os"
+	"time"
 
-  "github.com/braswelljr/goax/model"
-  "github.com/golang-jwt/jwt/v4"
+	"github.com/braswelljr/axxxe/model"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var (
@@ -18,7 +18,7 @@ type SignedParams struct {
 }
 
 func GetAllTokens(user model.TokenizedUserParams) (string, string, error) {
-  // set secret key
+	// set secret key
 	if SecretKey != "" {
 		SecretKey = "xxyyzzaa"
 	}

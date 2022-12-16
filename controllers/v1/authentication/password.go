@@ -2,7 +2,7 @@ package authentication
 
 import (
 	"context"
-	"github.com/braswelljr/goax/controllers/v1/user"
+	"github.com/braswelljr/axxxe/controllers/v1/user"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/braswelljr/goax/model"
+	"github.com/braswelljr/axxxe/model"
 )
 
 // HashPassword to hash the user's password
