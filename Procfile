@@ -1,1 +1,1 @@
-web: bin/axxxe
+web: ./bin/axxxe.exe

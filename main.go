@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -11,12 +11,11 @@ import (
 	"github.com/braswelljr/axxxe/routes"
 )
 
+var (
+	PORT = 5050
+)
+
 func main() {
-	PORT := os.Getenv("PORT")
-	// check and set empty PORT
-	if PORT == "" {
-		PORT = "3030"
-	}
 	// Initialize app
 	app := fiber.New()
 
@@ -41,7 +40,7 @@ func main() {
 	routes.Routes(app)
 
 	// Listen on port
-	if err := app.Listen(":" + PORT); err != nil {
+	if err := app.Listen(fmt.Sprintf(":%v", PORT)); err != nil {
 		log.Fatal("Something went wrong  ", err)
 	}
 }

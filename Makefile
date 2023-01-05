@@ -11,7 +11,7 @@ install:
 
 .PHONY: serve
 serve:
-  air -c .air.toml
+	air -c .air.toml
 
 .PHONY: nodemon
 nodemon: main.go
@@ -36,3 +36,4 @@ test:
 .PHONY: fix
 fix: ## Fix lint violations
 	gofmt -s -w .
+	goimports -w $$(find . -type f -name '*.go' -not -path "*/vendor/*")

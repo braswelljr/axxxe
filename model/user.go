@@ -25,8 +25,8 @@ type User struct {
 
 // LoginDetails - email and password for user login
 type LoginDetails struct {
-  Email    string `json:"email" bson:"email" validate:"required,email"`
-  Password string `json:"password" bson:"password" validate:"required"`
+	Email    string `json:"email" bson:"email" validate:"required,email"`
+	Password string `json:"password" bson:"password" validate:"required"`
 }
 
 // TokenizedUserParams - used for setting the user token
@@ -43,6 +43,6 @@ type TokenizedUserParams struct {
 
 // PasswordUpdateParams - password update params
 type PasswordUpdateParams struct {
-  OldPassword string  `json:"old_password" validate:"required"`
-  NewPassword string  `json:"new_password" bson:"password" validate:"required" min:"8"`
+	OldPassword string `json:"old_password" validate:"required"`
+	NewPassword string `json:"new_password" bson:"password" validate:"required" min:"8"`
 }

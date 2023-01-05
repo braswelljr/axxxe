@@ -2,8 +2,9 @@ package authentication
 
 import (
 	"context"
-	"github.com/braswelljr/axxxe/controllers/v1/user"
 	"time"
+
+	"github.com/braswelljr/axxxe/controllers/v1/user"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
